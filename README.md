@@ -4,6 +4,7 @@ Schoolwork I have done at the University of Kansas.
 Here is a reference to correspond course number with class topic:
 - EECS 168 - Programming 1 (Java & Android Development)
 - EECS 268 - Programming 2 (C++)
+- EECS 368 - Programming Language Paradigms (Racket, Java, ...)
 
 # Todo List
 - Add descriptions of each project
