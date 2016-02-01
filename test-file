@@ -1,0 +1,11 @@
+// irgendein Text im test-file
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main(void)
+{
+  cout << "blub" << endl;
+  system("PAUSE");
+  return 0;
+}
