@@ -3,8 +3,10 @@
 #include <vector>
 using namespace std;
 
+// edited:
 // offset+alignment-1 ...ddd
 // & ~(alignment-1); ...ddd
+// return 0;
 
 int main(void)
 {
