@@ -3,6 +3,9 @@
 #include <vector>
 using namespace std;
 
+// offset+alignment-1 ...
+// & ~(alignment-1); ...
+
 int main(void)
 {
   cout << "blub" << endl;
