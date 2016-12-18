@@ -22,7 +22,6 @@ Executive::Executive(char * p_fileName)
 	// check if stream has associated file
 	if( fileStream.is_open() == false )
 	{	
-		cout << "........................." << endl;
 		throw runtime_error("unable to open file! \
 							Please input file data into program!");
 	}
@@ -63,7 +62,7 @@ Executive::Executive(char * p_fileName)
 	fileStream.close();
 }
 	
-void Executive::run(void)
+void Executive::run()
 {
 	int input; 
 	do

@@ -15,13 +15,15 @@ private:
 	vector<VoterRegistrationRecord> m_voters;
 	
 public:
+	Executive() = delete;
+	
 	// @brief 	opens the file and read all records into a dynamically 
 	//		 	allocated array
 	Executive(char* p_fileName);
 	
 	// @brief	prompts for and reads from the console directives
 	//			to be applied to this stored data
-	void run(void);
+	void run();
 };
 
 #endif
