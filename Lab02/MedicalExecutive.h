@@ -25,6 +25,20 @@ private:
 	
 	void split(const string& s, char delimiter, vector<string>& elems);
 	
+	/**
+	 * @Pre		create a City
+	 * @Post	the specified City of type T is inserted in the LL so that the LL is in Order.
+	 * 			In order means first sort by population, then by infectionLeven, and then by cityName
+	 * @return	None
+	 */
+	void insertCityNodeIntoLL(LinkedList<City>& ll, City& cityNode);
+	
+	/**
+	 * @Pre		None
+	 * @Post	applies actions on the city based on the requirements of the lab
+	 * @return	None
+	 */
+	void applyActionOnCity(City& city);
 	
 public:
 	MedicalExecutive() = delete;
@@ -32,31 +46,8 @@ public:
 	void run();
 	
 	
-	/**
-	 * @Pre		create a node and specify a cmp_data which the LL is sorted by.
-	 * @Post	the specified node of type T is inserted in the LL so that the LL is in Order.
-	 * @return	None
-	 */
-	template <typename T>
-	static void insertInOrderIntoLL(LinkedList<T>& ll, T node, int cmp_data);
 };
 
 
-template <typename T>
-void MedicalExecutive::insertInOrderIntoLL(LinkedList<T>& ll, T node, int cmp_data)
-{
-	int inputPos;
-	for(inputPos=1; inputPos <= ll.getLength(); ++inputPos)
-	{
-		if( cmp_data >= ll.getEntry(inputPos) ) 	// insert position found!
-		{
-			ll.insert(inputPos, node);
-			break;
-		}
-	}
-	// a position of >= could not be found so addBack
-	if( inputPos == ll.getLength()+1 )	
-		ll.insert(inputPos, node);
-}
 
 #endif

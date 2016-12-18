@@ -40,7 +40,9 @@ MedicalExecutive::MedicalExecutive(char * p_fileName) :
 		
 		// coordinate the reading of the data into the LL
 		City* newCity = new City(results[0], stoi(results[1]), stoi(results[2]));
-		m_infectedCityList.addFront(*newCity);
+		
+		// add it back to the list (helps to keep the list sorted by population)
+		insertCityNodeIntoLL(m_infectedCityList, *newCity);
 	}
 	// close the file stream
 	fileStream.close();
@@ -78,11 +80,9 @@ void MedicalExecutive::run()
 				{
 					City cityLL = m_infectedCityList.getEntry(i);
 					cityLL.increaseInfectionLevelByOne();
-					m_infectedCityList.setEntry(i, cityLL);
+					applyActionOnCity( cityLL );
 				}
-				cout << "The infection level for all cities has been increased." << endl;
-				// ... has been placed in quarantine! ...
-				
+				cout << "The infection level for all cities has been increased." << endl;				
 				break;
 			}
 			case 2:	// Increase infection level of specific city
@@ -96,7 +96,7 @@ void MedicalExecutive::run()
 				int position = m_infectedCityList.positionOf(city);
 				City cityLL = m_infectedCityList.getEntry(position);
 				cityLL.increaseInfectionLevelByOne();
-				m_infectedCityList.setEntry(position, cityLL);
+				applyActionOnCity( cityLL );
 				break;
 			}
 			case 3:	// Print status of a specific city
@@ -178,10 +178,10 @@ void MedicalExecutive::run()
 	cout << "\nThanks for checking infection outbreak!\nBye." << endl;
 }
 
-void MedicalExecutive::applyActionOnCity()
+void MedicalExecutive::applyActionOnCity(City& city)
 {
-	
-	switch(infectionLevel)
+	int infectionLevel = city.getInfectionLevel();
+	switch( infectionLevel )
 	{
 		case 0:	/* do nothing */
 		{
@@ -190,40 +190,92 @@ void MedicalExecutive::applyActionOnCity()
 		case 1:
 		{
 			// remove this city from the list
-			// decrease the population by 10% (rounded down)
-			// add it back to the list (helps to keep the list sorted by population)
+			m_infectedCityList.removeAt( m_infectedCityList.positionOf(city) );
 			
+			// decrease the population by 10% (rounded down = truncated)
+			city.setPopulation( city.getPopulation() * 0.90 );
+			
+			// add it back to the list (helps to keep the list sorted by population)
+			insertCityNodeIntoLL(m_infectedCityList, city);
 			break;
 		}
 		case 2:
 		{
 			// remove this city from the list
-			// decrease the population by 20% (rounded down)
+			m_infectedCityList.removeAt( m_infectedCityList.positionOf(city) );
+			
+			// decrease the population by 20% (rounded down = truncated)
+			city.setPopulation( city.getPopulation() * 0.80 );
+			
 			// add it back to the list (helps to keep the list sorted by population)
+			insertCityNodeIntoLL(m_infectedCityList, city);
 			break;
 		}
 		case 3:
 		{
-			// take 25% (rounded down) of the population and form a new city
 			// both cities should be removed and added back to the list as before
+			m_infectedCityList.removeAt( m_infectedCityList.positionOf(city) );
+			
+			// take 25% (rounded down = truncated) of the population and form a new city
 			// note: when forming a new city the name of the city will be the old name with a "New " in front
+			string newName("New ");
+			city.setCityName( newName.append( city.getCityName() ) );
+			city.setPopulation( city.getPopulation() * 0.75 );
+			
+			insertCityNodeIntoLL(m_infectedCityList, city);
 			break;
 		}
 		case 4:
 		{
 			// all hope is lost for the city
 			// => the city is removed from the infected list and moved to the quarantined list (with its remaining inhabitants
+			m_infectedCityList.removeAt( m_infectedCityList.positionOf(city) );
+			insertCityNodeIntoLL( m_quarantinedCityList, city);
+			
 			// => a message "City X has been placed in quarantine" is printed to the screen
+			cout << "City " << city.getCityName() << " has been placed in quarantine" << endl;
 			// => this city can no longer be interacted with other than to be saved in the quarantine log
 			// note: once a city is moved to quarantine, it does not change infection level nor population
 			break;
 		}
 		default:
 		{
+			// undefined infectionLevel... do nothing...
 		}
 	}
 }
 
+void MedicalExecutive::insertCityNodeIntoLL(LinkedList<City>& ll, City& cityNode)
+{
+	int inputPos; 
+	for(inputPos=1; inputPos <= ll.getLength(); ++inputPos)
+	{
+		City c = ll.getEntry(inputPos);
+		if( cityNode.getPopulation() > c.getPopulation() ) 	// greater population
+		{
+			ll.insert(inputPos, cityNode);
+			break;
+		}
+		// if population tied => then sort by infectionLevel
+		else if( cityNode.getPopulation() == c.getPopulation() ) 	// same population (tied)
+		{
+			if( cityNode.getInfectionLevel() > c.getInfectionLevel() )	// greater infectionLevel
+			{
+				ll.insert(inputPos, cityNode);
+				break;
+			}
+			// if infectionLevel tied => then sort by cityName
+			else if( cityNode.getCityName().compare( c.getCityName() ) >= 0 )
+			{
+				ll.insert(inputPos, cityNode);
+				break;
+			}
+		}
+	}
+	// a position of >= could not be found so addBack
+	if( inputPos == ll.getLength()+1 )	
+		ll.insert(inputPos, cityNode);
+}
 
 void MedicalExecutive::split(const string& s, char delimiter, vector<string>& elems)
 {

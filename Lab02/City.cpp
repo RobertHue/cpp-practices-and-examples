@@ -18,6 +18,10 @@ const string& City::getCityName() const
 {
 	return m_cityName;
 }
+void City::setCityName(const string& newCityName)
+{
+	m_cityName = newCityName;
+} 
 
 int City::getPopulation() const
 {

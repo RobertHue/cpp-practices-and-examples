@@ -32,6 +32,7 @@ public:
 	}
 	
 	const string& getCityName() const;
+	void setCityName(const string& newCityName);
 	
 	int getPopulation() const;
 	void setPopulation(int population);  

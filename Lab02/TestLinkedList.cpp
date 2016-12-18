@@ -65,8 +65,20 @@ BOOST_AUTO_TEST_CASE( test_insertInOrderIntoLL )
 	ll.addFront( vec[0] );
 	for(unsigned int j=1; j<vec.size(); ++j)
 	{
-		MedicalExecutive::insertInOrderIntoLL<int>(ll, vec[j], vec[j]);
-		
+		int inputPos;
+		for(inputPos=1; inputPos <= ll.getLength(); ++inputPos)
+		{
+			if( vec[j] >= ll.getEntry(inputPos) ) 	// insert position found!
+			{
+				// TODO if population tied => then sort by infectionLevel
+				// TODO if infectionLevel tied => then sort by cityName
+				ll.insert(inputPos, vec[j]);
+				break;
+			}
+		}
+		// a position of >= could not be found so addBack
+		if( inputPos == ll.getLength()+1 )	
+			ll.insert(inputPos, node);
 	}
 	BOOST_CHECK(ll.getLength() == 5);
 	
