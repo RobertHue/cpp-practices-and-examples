@@ -1,0 +1,6 @@
+#ignore all the files in the build or output directory
+build/
+
+##################
+# do not ignore .gitignore
+!.gitignore

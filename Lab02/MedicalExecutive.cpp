@@ -39,10 +39,10 @@ MedicalExecutive::MedicalExecutive(char * p_fileName) :
 		split( line, ',', results );
 		
 		// coordinate the reading of the data into the LL
-		City* newCity = new City(results[0], stoi(results[1]), stoi(results[2]));
+		City newCity = City(results[0], stoi(results[1]), stoi(results[2]));
 		
 		// add it back to the list (helps to keep the list sorted by population)
-		insertCityNodeIntoLL(m_infectedCityList, *newCity);
+		insertCityNodeIntoLL(m_infectedCityList, newCity);
 	}
 	// close the file stream
 	fileStream.close();
@@ -76,9 +76,10 @@ void MedicalExecutive::run()
 		{  
 			case 1:	// Increase infection level of all cities
 			{
-				for(int i=1; i<=m_infectedCityList.getLength(); ++i)
+				for(int i=1; i <= m_infectedCityList.getLength(); ++i)
 				{
 					City cityLL = m_infectedCityList.getEntry(i);
+					cout << "i: " << i << endl;
 					cityLL.increaseInfectionLevelByOne();
 					applyActionOnCity( cityLL );
 				}
