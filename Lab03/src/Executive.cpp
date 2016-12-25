@@ -12,7 +12,7 @@
 #include <iostream>
 #include <limits>	// for streamsize
 
-Executive::Executive() : mathTools(*new MathTools())
+Executive::Executive() : mathTools()
 { 
 }
 	

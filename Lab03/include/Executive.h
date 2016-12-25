@@ -7,7 +7,7 @@
 class Executive
 {
 private:
-	MathToolsInterface& mathTools;
+	MathTools mathTools;
 public:
 	Executive();
 	
