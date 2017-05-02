@@ -10,4 +10,7 @@ build/
 # do not ignore .gitignore
 !.gitignore
 
+# ignore netbeans related folders (maybe there is a better way to ignore this)
+Serializer/nbproject
+
 # end

@@ -1,41 +1,44 @@
 #include <iostream>
 #include <string>
 #include <list>
-#include <hdf5.h>   // for C style HDF5 support
+#include <ostream>
 
-// #include "Serializer.h"  // for serializer strategies
+#include "Serializer.h"  // for serializer strategies
 
-class Person
-{
+class Person {
+    friend std::ostream& operator<<(std::ostream& os, const Person& person);
+
 public:
-    struct home_t
-    {
-    	home_t(std::string s, std::string p) : street(s), plz(p) {}
+
+    struct home_t {
+        friend std::ostream& operator<<(std::ostream& os, const home_t& h);
+
+        home_t(std::string s, std::string p) : street(s), plz(p) {
+        }
         std::string street;
         std::string plz;
 
-        /*
         template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
+        void serialize(Archive & ar, const unsigned int version) {
             ar & BOOST_SERIALIZATION_NVP(street);
             ar & BOOST_SERIALIZATION_NVP(plz);
         }
-         */
     };
 
-public:
-    Person() : name("Max Mustermann"), age(20), home("SomeStreet 20", "000000") {}
-    Person(std::string n, int a, home_t h) : name(n), age(a), home{h} {}
+public: 
 
-        /*
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
+    Person() : name("Max Mustermann"), age(20), home("SomeStreet 20", "000000") {
+    }
+    Person(std::string n, int a, home_t h) : name(n), age(a), home{h}
     {
+    }
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
         ar & BOOST_SERIALIZATION_NVP(name);
         ar & BOOST_SERIALIZATION_NVP(age);
         ar & BOOST_SERIALIZATION_NVP(home);
-    } */
+    }
 
 private:
     std::string name;
@@ -43,23 +46,22 @@ private:
     home_t home;
 };
 
-class Car
-{
-	Car() : id(0) {}
+std::ostream& operator<<(std::ostream& os, const Person& person) {
+    os << "\nName: " << person.name << "\nAge: " << person.age << "\t" << person.home;
+    return os; // to support chaining
+}
 
-private:
-	int id;
-};
+std::ostream& operator<<(std::ostream& os, const Person::home_t& h) {
+    os << "\nPLZ: " << h.plz << "\nStreet: " << h.street;
+    return os; // to support chaining
+}
 
-#define FILE "dset.h5"
-
-int main()
-{
+int main() {
     std::cout << "hello world!" << std::endl;
-    
-    // setup some data to be serialized
-    Car test();
 
+    /////////////////////////////////////////
+    // setup some data to be serialized
+    
     std::list<std::string> strList;
     strList.push_back("Barking");
     strList.push_back("up");
@@ -70,36 +72,42 @@ int main()
     std::list<Person> personList;
     personList.push_back(Person());
     personList.push_back(Person("SomeoneElse", 22, Person::home_t("SomeOtherStreet 22", "111111")));
-
-    /*
-    Serializer<BoostXMLSerializer> ser("fileName1");
-    ser.save("uuid1", strList);
-    ser.save("uuid2", personList);
-     */
     
+    // std::unique_ptr<Person> personOnHeap(new Person("Bernd", 30, Person::home_t("-","-") ));     // ensures RAII principle 
+    // (here: wrapper unique_ptr which owns the object and takes care of proper deletion after scope is being left)
 
-    hid_t       file_id, dataset_id, dataspace_id;  /* identifiers */
-    hsize_t     dims[2];
-    herr_t      status;
+    /////////////////////////////////////////
+    // setup Serializer and call its save method
+    Serializer<BinarySerializer> ser("fileName1");
+    Location loc1 = ser.save("uuid1", strList);
+    Location loc2 = ser.save("uuid2", personList);
 
-    /* Create a new file using default properties. */
-    file_id = H5Fcreate(FILE, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    /////////////////////////////////////////
+    // delete the old memory to show that its being read solely from the file
+    // delete personList;
+    // delete strList;
+    // personOnHeap.reset();
 
-    /* Create the data space for the dataset. */
-    dims[0] = 4; 
-    dims[1] = 6; 
-    dataspace_id = H5Screate_simple(2, dims, NULL);
+    /////////////////////////////////////////
+    // declare some variables which can hold the data from the file
+    std::list<std::string> newStrList;
+    std::list<Person> newPersonList;
+    
+    /////////////////////////////////////////
+    // load the data from the file
+    ser.load(loc1, newStrList);
+    ser.load(loc2, newPersonList);
 
-    /* Create the dataset. */
-    dataset_id = H5Dcreate2(file_id, "/dset", H5T_STD_I32BE, dataspace_id, 
-                           H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    /////////////////////////////////////////
+    // output the data for debug purposes
+    std::cout << "---------------" << std::endl;
+    std::cout << "In MEM again:" << std::endl;
+    std::cout << "---------------" << std::endl;
+    for (auto i : newStrList)       std::cout << i << std::endl;
+    std::cout << "---------------" << std::endl;
+    for (auto i : newPersonList)    std::cout << i << std::endl;
+    std::cout << "---------------" << std::endl;
 
-    /* End access to the dataset and release resources used by it. */
-    status = H5Dclose(dataset_id);
 
-    /* Terminate access to the data space. */ 
-    status = H5Sclose(dataspace_id);
-
-    /* Close the file. */
-    status = H5Fclose(file_id);
+    std::cout << "finished..." << std::endl;
 }
