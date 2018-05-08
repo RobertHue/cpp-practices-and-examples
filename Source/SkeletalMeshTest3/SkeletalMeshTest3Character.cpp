@@ -5,10 +5,14 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
-#include "Components/SkinnedMeshComponent.h" // for access to SkinnedMeshComp
+
+#include "Containers/UnrealString.h" // for FStrings
+#include "Components/SkeletalMeshComponent.h" // for definition of USkeletalMeshComp
+#include "Components/SkinnedMeshComponent.h" // for definition of SkinnedMeshComp
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/SpringArmComponent.h" 
 
 //////////////////////////////////////////////////////////////////////////
 // ASkeletalMeshTest3Character
@@ -141,28 +145,29 @@ void ASkeletalMeshTest3Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
 
-	USkinnedMeshComponent* skMesh = this->GetMesh();	//c++-slicing is used here... (bad style)
-	int numOfBones = skMesh->GetNumBones();
+
+	USkeletalMeshComponent* pSkeletalMeshComp = this->GetMesh();
+	// int numOfBones = pSkeletalMeshComp->GetNumBones();
+	int numOfBones = this->GetMesh()->GetNumBones();
+
+	USkinnedMeshComponent* pSkinnedMeshComp = dynamic_cast<USkinnedMeshComponent*>(pSkeletalMeshComp);
+	// USkinnedMeshComponent* skMesh = this->GetMesh();	//c++-slicing is used here... (bad style)
 	
-	FVector boneLocation = skMesh->GetBoneLocation(TEXT("Root"), EBoneSpaces::WorldSpace);
-	FQuat boneQuat = skMesh->GetBoneQuaternion(TEXT("Root"), EBoneSpaces::WorldSpace);
 
-	FName boneName0 = skMesh->GetBoneName(0);
-	FName boneName1 = skMesh->GetBoneName(1);
-	FName boneName2 = skMesh->GetBoneName(2);
-	// done: used skMesh instead of m_pPoseableMeshComp
-
-	this->SetBoneLocation
-
-	static int counter = 0; 
+	static int counter = 0;  
 	++counter;
 	if (counter % 100 == 0) { 
 		UE_LOG(LogTemp, Warning, TEXT("hello"));
 		UE_LOG(LogTemp, Warning, TEXT("Num of bones:  %d"), numOfBones);
 		for (int i = 0; i < numOfBones; ++i) {
-			UE_LOG(LogTemp, Warning, TEXT("Bone Name %d is:  %s"), i, *skMesh->GetBoneName(i).ToString());
-		}  
-		UE_LOG(LogTemp, Warning, TEXT("bone loc:  %s"), *boneLocation.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("bone rot:  %s"), *boneQuat.ToString());
+			FName nameOfCurrentBone = pSkeletalMeshComp->GetBoneName(i);
+			UE_LOG(LogTemp, Warning, TEXT("Bone Name %d is:  %s"), i, *nameOfCurrentBone.ToString());
+			// FVector loc1 = pSkeletalMeshComp->GetBoneLocation(nameOfCurrentBone, EBoneSpaces::WorldSpace);
+			// FString s1 = loc1.ToString();
+			UE_LOG(LogTemp, Warning, TEXT("\tLoc:  %s"), *pSkeletalMeshComp->GetBoneLocation(nameOfCurrentBone, 
+				EBoneSpaces::WorldSpace).ToString());
+			UE_LOG(LogTemp, Warning, TEXT("\tRot(Quat):  %s"), *pSkeletalMeshComp->GetBoneQuaternion(nameOfCurrentBone, 
+				EBoneSpaces::WorldSpace).ToString());
+		}
 	}
-} 
+}  
