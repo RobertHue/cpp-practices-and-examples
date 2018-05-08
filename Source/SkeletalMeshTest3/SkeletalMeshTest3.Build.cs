@@ -8,6 +8,19 @@ public class SkeletalMeshTest3 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay" });
-	}
+		PublicDependencyModuleNames.AddRange(new string[] {
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "HeadMountedDisplay"
+        });
+
+        /*
+        // shouldn't be needed because setup by unreal
+        PrivateIncludePaths.AddRange(new string[] {
+            ".",
+        });
+        */
+    }
 }
