@@ -14,8 +14,20 @@ class SKELETALMESHTEST3_API UMyAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+protected:
+	/*True means that we're currently in air - or falling*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		bool bIsFalling;
+	 
+	/*Holds the current speed of our character*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float MovementSpeed;
 
-public:
-	void test();
+
+
+	/*Updates the above properties*/
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	UFUNCTION(BlueprintCallable, Category = "UpdateAnimationProperties")
+		void UpdateAnimationProperties();
 
 };
