@@ -31,9 +31,9 @@ public:
 	float BaseLookUpRate;
 
 	//////////////////////////////////////////////////////////
-	/** TODO */
-	UPROPERTY(VisibleAnywhere, Category = SKComp)
-		UPoseableMeshComponent *m_pPoseableMeshComp;
+	/** not used because UPoseableMeshComp cannot be mixed with animation data (use Modify Bone BP instead) */
+	// UPROPERTY(VisibleAnywhere, Category = SKComp)
+	//	UPoseableMeshComponent *m_pPoseableMeshComp;
 	/** TODO */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = bone1)
 		FVector m_locationOfBone1;
@@ -86,5 +86,16 @@ public:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-};
+	/**************************************************
+		CUSTOM CHANGES:	
+	***************************************************/
+public:
+	UPROPERTY(EditAnywhere, Category = TEST)
+	class USkeletalMeshComponent* m_pSkeletalMeshComp;
 
+	UPROPERTY(EditAnywhere, Category = TEST)  
+	class USkeletalMesh* m_pSkeletalMesh; 
+
+	UPROPERTY(EditAnywhere, Category = TEST)
+	class USkeleton* m_pCurrentSkeleton;	// a pointer which stores the skeleton enabling acces to the Bone Hierarchy
+};
