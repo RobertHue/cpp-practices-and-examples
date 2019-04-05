@@ -1,3 +1,0 @@
-Lawrence, 85483, 3
-Kansas City, 1500000, 2
-Smallville, 23, 0
