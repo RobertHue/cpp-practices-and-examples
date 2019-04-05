@@ -1,0 +1,43 @@
+ -----------PART1---------------
+Balance:100.0
+Balance:50.0
+Insufficient Funds
+Balance:90.0
+Balance:30.0
+Balance:17.0
+
+-----------PART2---------------
+Balance:100.0
+Balance:60.0
+Balance:115.0
+Ledger:'((start = 100.0 ) (- 40.0 =  60.0 ) (+ 55.0 =  115.0 ) )
+
+-----------PART3---------------
+Balance:100.0
+Balance:60.0
+Incorrect Password
+Ledger:'((start = 100.0 ) (- 40.0 =  60.0 ) )
+
+-----------PART4---------------
+Balance:40.0
+Incorrect password
+Incorrect password
+Incorrect password
+Incorrect password
+Incorrect password
+Incorrect password
+Incorrect password
+Cops called
+
+-----------PART5---------------
+Incorrect Password
+Ledger:'((start = 300.0 ) )
+Balance:0.0
+Balance:500.0
+Ledger:'((start = 300.0 ) (- 300.0 =  0.0 ) )
+Ledger:'((start = 200.0 ) (+ 300.0 =  500.0 ) )
+
+-----------PART6---------------
+Incorrect Password
+Balance:105.0
+Balance:105.0
